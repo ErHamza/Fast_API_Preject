@@ -32,5 +32,5 @@ def verify_access_token(token: str , credentials_exception):
     return token_data
 
 def get_current_user(token :str = Depends(Oauth_scheme)):
-    credentials_exceptions = HTTPException(status.HTTP_401_UNAUTHORIZED, detail="you are not welcome")
+    credentials_exceptions = HTTPException(status.HTTP_401_UNAUTHORIZED, detail="you are not welcome user")
     return verify_access_token(token, credentials_exceptions)
