@@ -5,15 +5,17 @@ from typing import List, Optional
 from .dtbase import database
 
 
-router= APIRouter(
-    prefix="/posts"
-)
+router= APIRouter()
 
 
 conn= database.connection()
 cur = conn.cursor()
 
-@router.get("/", response_model=List[schemas.All_details])
+@router.get("/")
+def fist_page():
+    return {"message": "welcome to my application hamza"}
+
+@router.get("/posts", response_model=List[schemas.All_details])
 def get_all_posts(current_user=Depends(Oathou2.get_current_user), limit: int = 20, search: str ="" ):
     user_id = current_user.id
     searching= "%"+search+"%"
@@ -32,7 +34,7 @@ def get_all_posts(current_user=Depends(Oathou2.get_current_user), limit: int = 2
     posts = cur.fetchall()
     return posts
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post_response)
+@router.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.Post_response)
 def create_posts(post: schemas.Post_create, current_user = Depends(Oathou2.get_current_user)):
     user_id= current_user.id
 #TODO extract the user name from the object current_user
@@ -41,14 +43,14 @@ def create_posts(post: schemas.Post_create, current_user = Depends(Oathou2.get_c
     post=cur.fetchone()
     conn.commit()
     return post
-@router.get("/{id}", response_model=schemas.Post_response)
+@router.get("/posts/{id}", response_model=schemas.Post_response)
 def get_post(id: int):
     cur.execute("""Select * from page where id= %s """, (str(id),))
     post=cur.fetchone()
     if not post:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"the id {id} is not found")
     return post
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def del_post(id: int, current_user=Depends(Oathou2.get_current_user)):
     user_id=current_user.id
     cur.execute("""select user_id from page where id = %s""", (str(id),))
@@ -63,7 +65,7 @@ def del_post(id: int, current_user=Depends(Oathou2.get_current_user)):
         conn.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.put("/{id}", response_model= schemas.Post_response)
+@router.put("/posts/{id}", response_model= schemas.Post_response)
 def update_post(id : int, post : schemas.Post_create, current_user = Depends(Oathou2.get_current_user)):
     user_id = current_user.id
     cur.execute("""select user_id from page where id = %s""", (str(id),))
