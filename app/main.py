@@ -21,3 +21,8 @@ app.include_router(posts.router)
 app.include_router(users.router)
 app.include_router(authen.router)
 app.include_router(vote.router)
+
+
+@app.get("/")
+def fist_page():
+    return {"message": "welcome to my application hamza"}

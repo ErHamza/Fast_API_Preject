@@ -2,7 +2,7 @@ from .. import utility
 from fastapi import responses, status, HTTPException, APIRouter
 from .. import schemas
 from .dtbase import database
-from psycopg2.extras import RealDictCursor
+
 from typing import List
 
 

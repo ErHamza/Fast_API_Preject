@@ -10,11 +10,6 @@ router= APIRouter()
 
 conn= database.connection()
 cur = conn.cursor()
-
-@router.get("/")
-def fist_page():
-    return {"message": "welcome to my application hamza"}
-
 @router.get("/posts", response_model=List[schemas.All_details])
 def get_all_posts(current_user=Depends(Oathou2.get_current_user), limit: int = 20, search: str ="" ):
     user_id = current_user.id

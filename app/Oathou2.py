@@ -16,8 +16,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_time
 def create_access_token(data : dict):
     var= data.copy()
     expire_token= datetime.utcnow()+ timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    var.update({"exp": expire_token })
-    token = jwt.encode(var, secret_ky , algorithm=ALGORITHM)
+    var.update({"exp": expire_token})
+    token = jwt.encode(var, secret_ky, algorithm=ALGORITHM)
     return token
 def verify_access_token(token: str , credentials_exception):
     try:
@@ -31,6 +31,7 @@ def verify_access_token(token: str , credentials_exception):
         raise credentials_exception
     return token_data
 
-def get_current_user(token :str = Depends(Oauth_scheme)):
+
+def get_current_user(token:str = Depends(Oauth_scheme)):
     credentials_exceptions = HTTPException(status.HTTP_401_UNAUTHORIZED, detail="you are not welcome user")
     return verify_access_token(token, credentials_exceptions)

@@ -8,7 +8,15 @@ conn = database.connection()
 cur = conn.cursor()
 router = APIRouter()
 @router.post("/vote", status_code=status.HTTP_201_CREATED)
-def vote(vote : schemas.Vote, current_user= Depends(Oathou2.get_current_user)):
+def vote(vote : schemas.Vote, current_user=Depends(Oathou2.get_current_user)):
+    cur.execute("""select name from page where id=(%s)""", (str(vote.post_id),))
+
+    post_test=cur.fetchone()
+    print(post_test)
+    if not post_test:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"there isn't a "
+                                                                          f"post with the id: {vote.post_id}")
+
     cur.execute("""select * from vote where user_id = (%s) and post_id=(%s)  """, (current_user.id , vote.post_id,))
     result= cur.fetchall()
     if vote.dir ==1:
@@ -18,7 +26,7 @@ def vote(vote : schemas.Vote, current_user= Depends(Oathou2.get_current_user)):
         cur.execute("""insert into vote(user_id, post_id) values(%s, %s)""", (current_user.id, vote.post_id,))
         conn.commit()
         return {"message": "you have voted"}
-    else :
+    else:
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="you haven't voted yet")
         cur.execute("""delete from vote where user_id =(%s) and post_id= (%s)""", (current_user.id, vote.post_id,))
@@ -27,11 +35,20 @@ def vote(vote : schemas.Vote, current_user= Depends(Oathou2.get_current_user)):
 
 
 @router.get("/vote/{id}")
-def votes(id :int):
+def votes(id: int):
+    cur.execute("""select name from page where id=(%s)""", (str(id),))
+
+    post_test = cur.fetchone()
+    print(post_test)
+    if not post_test:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"there isn't a "
+                                                                          f"post with the id: {id}")
+
     cur.execute("""Select p.name as "post_name", count(v.*) as "likes"
-     from vote v right join page p on v.post_id = p.id
+        from vote v right join page p on v.post_id = p.id
      group by name , p.id
       having p.id =(%s)""", (str(id),))
     result=cur.fetchone()
+
     return {"likes": result["likes"]}
 
