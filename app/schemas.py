@@ -44,6 +44,9 @@ class Tokendata(BaseModel):
 class Token(BaseModel):
        access_token: str
        token_type:str
+       name:str
+       expire_time:str
+       email:str
 
 class All_details(BaseModel):
        post_name: str
