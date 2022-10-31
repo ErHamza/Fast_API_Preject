@@ -27,7 +27,7 @@ def show_users():
 def add_user(send: schemas.User_model):
     pa= send.password
     password=utility.hash(pa)
-    cur.execute("""select * form user_account  where email=(%s)""",(send.email,))
+    cur.execute("""select * from user_account  where email=(%s)""",(send.email,))
     user=cur.fetchone()
     if user:
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="this email already exists")
