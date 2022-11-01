@@ -39,4 +39,3 @@ def add_user(send: schemas.User_model):
     new_user= cur.fetchone()
     conn.commit()
     return new_user
-#TODO fix : the server stops when the user enter same email for two users

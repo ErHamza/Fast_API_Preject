@@ -21,10 +21,13 @@ def get_all_posts(current_user=Depends(Oathou2.get_current_user), limit: int = 2
        
        u.name as "user_name",
        u.email  , 
-       u.id as "id_user"
+       u.id as "id_user",
+       p.created_at
      from page p join user_account u
       on p.user_id = u.id 
-     where user_id=(%s) and p.content like %s limit (%s) """,
+     where user_id=(%s) and p.content like %s 
+     Order by created_at desc
+     limit (%s)  """,
                 (user_id, searching, limit))
     posts = cur.fetchall()
     return posts
