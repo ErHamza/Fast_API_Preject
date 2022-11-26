@@ -56,7 +56,7 @@ class All_details(BaseModel):
        user_name:str
        email: str
        id_user: int
-       created_at : str
+       created_at : time
 
 
 class Vote(BaseModel):
