@@ -56,7 +56,9 @@ class All_details(BaseModel):
        user_name:str
        email: str
        id_user: int
-       created_at : time
+
+
+# In Herolu DB the column created_at is not created
 
 
 class Vote(BaseModel):
